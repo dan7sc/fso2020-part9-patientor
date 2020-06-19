@@ -6,8 +6,9 @@ import { useParams } from "react-router-dom";
 import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatient } from "../state";
 import { Patient } from "../types";
+import PatientEntry from "./PatientEntry";
 
-const PatientDetails: React.FC = () => {
+const PatientPage: React.FC = () => {
   const [{ patient }, dispatch] = useStateValue();
 
   const { id } = useParams<{ id: string }>();
@@ -50,8 +51,9 @@ const PatientDetails: React.FC = () => {
       <h2>{patient[id].name} {setGenderIcon()}</h2>
       <div>ssn: {patient[id].ssn}</div>
       <div>occupation: {patient[id].occupation}</div>
+      <PatientEntry entries={patient[id].entries} />
     </div>
   );
 };
 
-export default PatientDetails;
+export default PatientPage;
