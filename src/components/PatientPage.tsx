@@ -1,17 +1,37 @@
 import React from 'react';
 import axios from "axios";
-import { Icon } from "semantic-ui-react";
+import { Icon, Button } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
 
 import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatient } from "../state";
-import { Patient } from "../types";
+import { Patient, NewHealthCheckEntry } from "../types";
 import PatientEntry from "./PatientEntry";
+import AddPatientEntryModal from "../AddPatientEntryModal" ;
 
 const PatientPage: React.FC = () => {
   const [{ patient }, dispatch] = useStateValue();
 
+  const [modalOpen, setModalOpen] = React.useState(false);
+
   const { id } = useParams<{ id: string }>();
+
+  const openModal = () => setModalOpen(true);
+
+  const closeModal = () => setModalOpen(false);
+
+  const submitNewPatientEntry = async (values: NewHealthCheckEntry) => {
+    try {
+      const { data: updatedPatient } = await axios.post<Patient>(
+        `${apiBaseUrl}/patients/${id}/entries`,
+        values
+      );
+      dispatch({ type: 'UPDATE_PATIENT', payload: updatedPatient });
+      closeModal();
+    } catch(error) {
+      console.log(error.response.data);
+    }
+  };
 
   React.useEffect(() => {
     const fetchPatientById = async (id: string) => {
@@ -50,12 +70,20 @@ const PatientPage: React.FC = () => {
 
   return (
     <div>
-      <h2>
-        {patient[id].name}
-        <Icon name={iconName} />
-      </h2>
-      <div>ssn: {patient[id].ssn}</div>
-      <div>occupation: {patient[id].occupation}</div>
+      <div style={{ paddingBottom: "10px"}}>
+        <h2>
+          {patient[id].name}
+          <Icon name={iconName} />
+        </h2>
+        <div>ssn: {patient[id].ssn}</div>
+        <div>occupation: {patient[id].occupation}</div>
+      </div>
+      <AddPatientEntryModal
+        modalOpen={modalOpen}
+        onClose={closeModal}
+        onSubmit={submitNewPatientEntry}
+       />
+      <Button onClick={() => openModal()}>Add New Entry</Button>
       <PatientEntry entries={patient[id].entries} />
     </div>
   );
