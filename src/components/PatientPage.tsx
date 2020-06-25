@@ -34,21 +34,26 @@ const PatientPage: React.FC = () => {
     return null;
   }
 
-  const setGenderIcon = () => {
+  let iconName: 'mars' | 'venus' | 'neuter' | undefined;
+
+  if (patient[id].gender) {
     const gender = patient[id].gender;
 
     if (gender === 'male') {
-      return <Icon name='mars' />;
+      iconName = 'mars';
     } else if (gender === 'female') {
-      return <Icon name='venus' />;
+      iconName = 'venus';
     } else {
-      return <Icon name='neuter' />;
+      iconName = 'neuter';
     }
-  };
+  }
 
   return (
     <div>
-      <h2>{patient[id].name} {setGenderIcon()}</h2>
+      <h2>
+        {patient[id].name}
+        <Icon name={iconName} />
+      </h2>
       <div>ssn: {patient[id].ssn}</div>
       <div>occupation: {patient[id].occupation}</div>
       <PatientEntry entries={patient[id].entries} />
