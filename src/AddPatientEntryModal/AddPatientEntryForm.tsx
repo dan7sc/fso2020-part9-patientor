@@ -11,7 +11,10 @@ interface Props {
   onCancel: () => void;
 }
 
-const AddPatientEntryForm: React.FC<Props> = ({ onSubmit, onCancel }) => {
+const AddPatientEntryForm: React.FC<Props> = ({
+  onSubmit,
+  onCancel
+}) => {
   const [{diagnosis}] = useStateValue();
 
   return (

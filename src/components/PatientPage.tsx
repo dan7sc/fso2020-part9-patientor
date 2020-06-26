@@ -12,13 +12,17 @@ import AddPatientEntryModal from "../AddPatientEntryModal" ;
 const PatientPage: React.FC = () => {
   const [{ patient }, dispatch] = useStateValue();
 
-  const [modalOpen, setModalOpen] = React.useState(false);
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [error, setError] = React.useState<string | undefined>();
 
   const { id } = useParams<{ id: string }>();
 
-  const openModal = () => setModalOpen(true);
+  const openModal = (): void => setModalOpen(true);
 
-  const closeModal = () => setModalOpen(false);
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
 
   const submitNewPatientEntry = async (values: NewHealthCheckEntry) => {
     try {
@@ -28,8 +32,8 @@ const PatientPage: React.FC = () => {
       );
       dispatch({ type: 'UPDATE_PATIENT', payload: updatedPatient });
       closeModal();
-    } catch(error) {
-      console.log(error.response.data);
+    } catch(e) {
+      setError(e.response.data.error);
     }
   };
 
@@ -82,6 +86,7 @@ const PatientPage: React.FC = () => {
         modalOpen={modalOpen}
         onClose={closeModal}
         onSubmit={submitNewPatientEntry}
+        error={error}
        />
       <Button onClick={() => openModal()}>Add New Entry</Button>
       <PatientEntry entries={patient[id].entries} />
