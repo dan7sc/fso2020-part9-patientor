@@ -1,15 +1,41 @@
 import React from 'react';
 import { Grid, Button } from 'semantic-ui-react';
-import { Field, Formik, Form } from 'formik';
+import { Formik, Form } from 'formik';
 
-import { TextField, NumberField, DiagnosisSelection } from '../AddPatientModal/FormField';
-import { NewHealthCheckEntry } from '../types';
+import { SelectTypeField, EntryTypeOption } from '../AddPatientModal/FormField';
+import { EntryType, NewEntry, NewBaseEntry, NewOccupationalHealthcareEntry, NewHealthCheckEntry } from '../types';
 import { useStateValue } from '../state/state';
+import BaseEntryField from './BaseEntryField';
+import EntryTypeField from './EntryTypeField';
 
 interface Props {
-  onSubmit: (values: NewHealthCheckEntry) => void;
+  onSubmit: (values: NewEntry) => void;
   onCancel: () => void;
 }
+
+const entryTypeOptions: EntryTypeOption[] = [
+  { value: EntryType.OccupationalHealthcare, label: 'Occupational Healthcare'},
+  { value: EntryType.HealthCheck, label: 'Health Check'}
+];
+
+const baseEntryInitialValues: NewBaseEntry = {
+  description: '',
+  date: '',
+  specialist: '',
+  diagnosisCodes: []
+};
+
+const healthCheckEntryInitialValues: NewHealthCheckEntry = {
+  type: 'HealthCheck',
+  healthCheckRating: 0,
+  ...baseEntryInitialValues
+};
+
+const occupationalHealthcareEntryInitialValues: NewOccupationalHealthcareEntry = {
+  type: 'OccupationalHealthcare',
+  employerName: '',
+  ...baseEntryInitialValues
+};
 
 const AddPatientEntryForm: React.FC<Props> = ({
   onSubmit,
@@ -17,16 +43,20 @@ const AddPatientEntryForm: React.FC<Props> = ({
 }) => {
   const [{diagnosis}] = useStateValue();
 
+  const initialValues: any = (type: any) => {
+    switch(type) {
+      case EntryType.HealthCheck:
+        return healthCheckEntryInitialValues;
+      case EntryType.OccupationalHealthcare:
+        return occupationalHealthcareEntryInitialValues;
+      default:
+        return occupationalHealthcareEntryInitialValues;
+    }
+  };
+
   return (
     <Formik
-      initialValues={{
-        type: 'HealthCheck',
-        description: '',
-        date: '',
-        specialist: '',
-        healthCheckRating: 0,
-        diagnosisCodes: []
-      }}
+      initialValues={initialValues(EntryType.HealthCheck)}
       onSubmit={onSubmit}
       validate={values => {
         const requiredError = 'Field is required';
@@ -43,47 +73,28 @@ const AddPatientEntryForm: React.FC<Props> = ({
         if (!values.specialist) {
           errors.specialist = requiredError;
         }
-        if (!values.healthCheckRating && values.healthCheckRating !== 0) {
-          errors.healthCheckRating = requiredError;
-        }
         if (!values.diagnosisCodes) {
           errors.diagnosisCodes = requiredError;
         }
         return errors;
       }}
     >
-      {({ isValid, dirty, setFieldValue, setFieldTouched }) => {
+      {({ values, isValid, dirty, handleChange, setFieldValue, setFieldTouched }) => {
         return (
           <Form className="form ui">
-            <Field
-              label="Date"
-              placeholder="YYYY-MM-DD"
-              name="date"
-              component={TextField}
-            />
-            <Field
-              label="Specialist"
-              placeholder="Specialist"
-              name="specialist"
-              component={TextField}
-            />
-            <Field
-              label="Description"
-              placeholder="Description"
-              name="description"
-              component={TextField}
-            />
-            <Field
-              label="Health Check Rating"
-              name="healthCheckRating"
-              min={0}
-              max={3}
-              component={NumberField}
-            />
-            <DiagnosisSelection
-              diagnoses={Object.values(diagnosis)}
+            <BaseEntryField
+              diagnosis={diagnosis}
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}
+            />
+            <SelectTypeField
+              label='Type'
+              name='type'
+              options={entryTypeOptions}
+              onChange={handleChange}
+            />
+            <EntryTypeField
+              entryType={values.type}
             />
             <Grid>
               <Grid.Column floated="left" width={5}>

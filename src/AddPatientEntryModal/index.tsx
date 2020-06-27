@@ -1,12 +1,12 @@
 import React from 'react';
 import { Modal, Segment } from 'semantic-ui-react';
-import AddPatientEntryForm from './AddPatientEntryForm';
-import { NewHealthCheckEntry } from '../types';
+import AddPatientEntryForm  from './AddPatientEntryForm';
+import { NewEntry } from '../types';
 
 interface Props {
   modalOpen: boolean;
   onClose: () => void;
-  onSubmit: (values: NewHealthCheckEntry) => void;
+  onSubmit: (values: NewEntry) => void;
   error?: string;
 }
 
@@ -33,6 +33,7 @@ const AddPatientEntryModal: React.FC<Props> = ({
           onSubmit={onSubmit}
           onCancel={onClose}
         />
+
       </Modal.Content>
     </Modal>
   );

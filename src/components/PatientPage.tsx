@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 
 import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatient } from "../state";
-import { Patient, NewHealthCheckEntry } from "../types";
+import { Patient, NewEntry } from "../types";
 import PatientEntry from "./PatientEntry";
 import AddPatientEntryModal from "../AddPatientEntryModal" ;
 
@@ -24,7 +24,7 @@ const PatientPage: React.FC = () => {
     setError(undefined);
   };
 
-  const submitNewPatientEntry = async (values: NewHealthCheckEntry) => {
+  const submitNewPatientEntry = async (values: NewEntry) => {
     try {
       const { data: updatedPatient } = await axios.post<Patient>(
         `${apiBaseUrl}/patients/${id}/entries`,
