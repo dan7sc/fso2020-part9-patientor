@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Grid, Button } from 'semantic-ui-react';
 import { Formik, Form } from 'formik';
 
-import { SelectTypeField, EntryTypeOption } from '../AddPatientModal/FormField';
 import { EntryType, NewEntry, NewBaseEntry, NewOccupationalHealthcareEntry, NewHealthCheckEntry } from '../types';
 import { useStateValue } from '../state/state';
 import BaseEntryField from './BaseEntryField';
@@ -11,12 +10,8 @@ import EntryTypeField from './EntryTypeField';
 interface Props {
   onSubmit: (values: NewEntry) => void;
   onCancel: () => void;
+  entryType: any;
 }
-
-const entryTypeOptions: EntryTypeOption[] = [
-  { value: EntryType.OccupationalHealthcare, label: 'Occupational Healthcare'},
-  { value: EntryType.HealthCheck, label: 'Health Check'}
-];
 
 const baseEntryInitialValues: NewBaseEntry = {
   description: '',
@@ -26,37 +21,54 @@ const baseEntryInitialValues: NewBaseEntry = {
 };
 
 const healthCheckEntryInitialValues: NewHealthCheckEntry = {
-  type: 'HealthCheck',
-  healthCheckRating: 0,
-  ...baseEntryInitialValues
+  ...baseEntryInitialValues,
+  type: EntryType.HealthCheck,
+  healthCheckRating: 0
 };
 
 const occupationalHealthcareEntryInitialValues: NewOccupationalHealthcareEntry = {
-  type: 'OccupationalHealthcare',
+  ...baseEntryInitialValues,
+  type: EntryType.OccupationalHealthcare,
   employerName: '',
-  ...baseEntryInitialValues
+  sickLeave: {
+    startDate: '',
+    endDate: ''
+  }
+};
+
+const initialValues: any = {
+  'HealthCheck': healthCheckEntryInitialValues,
+  'OccupationalHealthcare': occupationalHealthcareEntryInitialValues
 };
 
 const AddPatientEntryForm: React.FC<Props> = ({
   onSubmit,
-  onCancel
+  onCancel,
+  entryType
 }) => {
   const [{diagnosis}] = useStateValue();
 
-  const initialValues: any = (type: any) => {
-    switch(type) {
-      case EntryType.HealthCheck:
-        return healthCheckEntryInitialValues;
-      case EntryType.OccupationalHealthcare:
-        return occupationalHealthcareEntryInitialValues;
-      default:
-        return occupationalHealthcareEntryInitialValues;
-    }
-  };
+  // const [initialValues, setInitialValues] = useState<NewEntry>(occupationalHealthcareEntryInitialValues);
+
+  // if (entryType !== initialValues.type) {
+  //   switch(entryType) {
+  //     case 'HealthCheck':
+  //       setInitialValues(healthCheckEntryInitialValues);
+  //       break;
+  //     case 'OccupationalHealthcare':
+  //       setInitialValues(occupationalHealthcareEntryInitialValues);
+  //       break;
+  //     default:
+  //       setInitialValues(initialValues);
+  //       break;
+  //   }
+  // }
+
+  console.log('****', entryType, initialValues[entryType].type);
 
   return (
     <Formik
-      initialValues={initialValues(EntryType.HealthCheck)}
+      initialValues={initialValues[entryType]}
       onSubmit={onSubmit}
       validate={values => {
         const requiredError = 'Field is required';
@@ -79,7 +91,7 @@ const AddPatientEntryForm: React.FC<Props> = ({
         return errors;
       }}
     >
-      {({ values, isValid, dirty, handleChange, setFieldValue, setFieldTouched }) => {
+      {({ values, isValid, dirty, setFieldValue, setFieldTouched }) => {
         return (
           <Form className="form ui">
             <BaseEntryField
@@ -87,14 +99,9 @@ const AddPatientEntryForm: React.FC<Props> = ({
               setFieldValue={setFieldValue}
               setFieldTouched={setFieldTouched}
             />
-            <SelectTypeField
-              label='Type'
-              name='type'
-              options={entryTypeOptions}
-              onChange={handleChange}
-            />
             <EntryTypeField
               entryType={values.type}
+              initial={values}
             />
             <Grid>
               <Grid.Column floated="left" width={5}>

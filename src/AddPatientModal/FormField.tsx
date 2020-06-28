@@ -45,7 +45,8 @@ export const TextField: React.FC<TextProps> = ({
 }) => (
   <Form.Field>
     <label>{label}</label>
-    <Field placeholder={placeholder} {...field} />
+    <Field {...field} placeholder={placeholder} />
+    {console.log('field',field)}
     <div style={{ color:'red' }}>
       <ErrorMessage name={field.name} />
     </div>
@@ -66,7 +67,7 @@ export const NumberField: React.FC<NumberProps> = ({ field, label, min, max }) =
   <Form.Field>
     <label>{label}</label>
     <Field {...field} type='number' min={min} max={max} />
-
+    {console.log('field',field)}
     <div style={{ color:'red' }}>
       <ErrorMessage name={field.name} />
     </div>
@@ -121,31 +122,34 @@ export type EntryTypeOption = {
 type SelectTypeFieldProps = {
   name: string;
   label: string;
+  value: any;
   options: EntryTypeOption[];
-  onChange: (e: any) => void;
+  onChange: (e: React.ChangeEvent<any>) => void;
 };
 
-export const SelectTypeField: React.FC<SelectTypeFieldProps> = ({
+export const EntryTypeSelectForm: React.FC<SelectTypeFieldProps> = ({
   name,
   label,
+  value,
   options,
   onChange
 }: SelectTypeFieldProps) => {
   return (
-  <Form.Field>
-    <label>{label}</label>
-    <Field
-      as="select"
-      name={name}
-      className="ui dropdown"
-      onChange={onChange}
-    >
-      {options.map(option => (
-        <option key={option.value} value={option.value}>
-          {option.label || option.value}
-        </option>
-      ))}
-    </Field>
-  </Form.Field>
-);
+    <div>
+      <label><strong>{label}</strong></label>
+      <select
+        name={name}
+        value={value}
+        className="fluid selection ui dropdown"
+        style={{ margin: '5px 0 15px 0' }}
+        onChange={onChange}
+      >
+        {options.map(option => (
+          <option key={option.value} value={option.value}>
+            {option.label || option.value}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
 };
