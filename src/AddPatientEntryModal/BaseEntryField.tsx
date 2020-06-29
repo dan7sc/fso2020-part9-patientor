@@ -2,13 +2,20 @@ import React from 'react';
 import { Field } from 'formik';
 
 import { TextField, DiagnosisSelection } from '../AddPatientModal/FormField';
-import { Diagnosis } from '../types';
+import { Diagnosis, NewBaseEntry } from '../types';
 
 interface Props {
   diagnosis: { [code: string]: Diagnosis };
   setFieldValue: (field: string, value: any, shouldValidate?: boolean | undefined) => void;
   setFieldTouched: (field: string, isTouched?: boolean | undefined, shouldValidate?: boolean | undefined) => void;
 }
+
+export const baseEntryInitialValues: NewBaseEntry = {
+  description: '',
+  date: '',
+  specialist: '',
+  diagnosisCodes: []
+};
 
 const BaseEntryField: React.FC<Props> = ({
   diagnosis,

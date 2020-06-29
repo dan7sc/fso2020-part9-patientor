@@ -1,44 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Grid, Button } from 'semantic-ui-react';
 import { Formik, Form } from 'formik';
 
-import { EntryType, NewEntry, NewBaseEntry, NewOccupationalHealthcareEntry, NewHealthCheckEntry } from '../types';
+import { NewEntry } from '../types';
 import { useStateValue } from '../state/state';
 import BaseEntryField from './BaseEntryField';
+import { healthCheckEntryInitialValues } from './HealthCheckEntryField';
+import { occupationalHealthcareEntryInitialValues } from './OccupationalHealthcareEntryField';
 import EntryTypeField from './EntryTypeField';
 
 interface Props {
   onSubmit: (values: NewEntry) => void;
   onCancel: () => void;
-  entryType: any;
+  entryType: string;
 }
 
-const baseEntryInitialValues: NewBaseEntry = {
-  description: '',
-  date: '',
-  specialist: '',
-  diagnosisCodes: []
-};
+interface ValuesProps {
+  [index: string]: NewEntry;
+}
 
-const healthCheckEntryInitialValues: NewHealthCheckEntry = {
-  ...baseEntryInitialValues,
-  type: EntryType.HealthCheck,
-  healthCheckRating: 0
-};
-
-const occupationalHealthcareEntryInitialValues: NewOccupationalHealthcareEntry = {
-  ...baseEntryInitialValues,
-  type: EntryType.OccupationalHealthcare,
-  employerName: '',
-  sickLeave: {
-    startDate: '',
-    endDate: ''
-  }
-};
-
-const initialValues: any = {
-  'HealthCheck': healthCheckEntryInitialValues,
-  'OccupationalHealthcare': occupationalHealthcareEntryInitialValues
+const initialValues: ValuesProps = {
+  HealthCheck: healthCheckEntryInitialValues,
+  OccupationalHealthcare: occupationalHealthcareEntryInitialValues
 };
 
 const AddPatientEntryForm: React.FC<Props> = ({
@@ -48,28 +31,11 @@ const AddPatientEntryForm: React.FC<Props> = ({
 }) => {
   const [{diagnosis}] = useStateValue();
 
-  // const [initialValues, setInitialValues] = useState<NewEntry>(occupationalHealthcareEntryInitialValues);
-
-  // if (entryType !== initialValues.type) {
-  //   switch(entryType) {
-  //     case 'HealthCheck':
-  //       setInitialValues(healthCheckEntryInitialValues);
-  //       break;
-  //     case 'OccupationalHealthcare':
-  //       setInitialValues(occupationalHealthcareEntryInitialValues);
-  //       break;
-  //     default:
-  //       setInitialValues(initialValues);
-  //       break;
-  //   }
-  // }
-
-  console.log('****', entryType, initialValues[entryType].type);
-
   return (
     <Formik
       initialValues={initialValues[entryType]}
       onSubmit={onSubmit}
+      enableReinitialize={true}
       validate={values => {
         const requiredError = 'Field is required';
         const errors: { [field: string]: string } = {};
@@ -101,7 +67,6 @@ const AddPatientEntryForm: React.FC<Props> = ({
             />
             <EntryTypeField
               entryType={values.type}
-              initial={values}
             />
             <Grid>
               <Grid.Column floated="left" width={5}>
