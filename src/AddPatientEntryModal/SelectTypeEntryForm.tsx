@@ -19,7 +19,7 @@ const SelectEntryTypeForm: React.FC<Props> = ({
   onCancel
 }) => {
   const [entryType, setEntryType] = useState<string>('HealthCheck');
-  const handleSelectChange = (event: any) => {
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const entryType = event.target.value;
     setEntryType(entryType);
   };

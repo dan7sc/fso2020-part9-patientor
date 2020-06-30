@@ -1,12 +1,13 @@
 import React from 'react';
 import { Grid, Button } from 'semantic-ui-react';
 import { Formik, Form } from 'formik';
+import { object } from 'yup';
 
-import { NewEntry } from '../types';
+import { NewEntry, EntryType } from '../types';
 import { useStateValue } from '../state/state';
-import BaseEntryField from './BaseEntryField';
-import { healthCheckEntryInitialValues } from './HealthCheckEntryField';
-import { occupationalHealthcareEntryInitialValues } from './OccupationalHealthcareEntryField';
+import BaseEntryField, { baseEntryValidation } from './BaseEntryField';
+import { healthCheckEntryInitialValues, healthCheckEntryValidation } from './HealthCheckEntryField';
+import { occupationalHealthcareEntryInitialValues, occupationalHealthcareEntryValidation } from './OccupationalHealthcareEntryField';
 import EntryTypeField from './EntryTypeField';
 
 interface Props {
@@ -24,6 +25,22 @@ const initialValues: ValuesProps = {
   OccupationalHealthcare: occupationalHealthcareEntryInitialValues
 };
 
+const getSchema = (type: string) => {
+  let schema;
+  if (type === EntryType.OccupationalHealthcare) {
+    schema = object().shape({
+      ...baseEntryValidation,
+      ...occupationalHealthcareEntryValidation,
+    });
+  } else if (type === EntryType.HealthCheck) {
+    schema = object().shape({
+      ...baseEntryValidation,
+      ...healthCheckEntryValidation,
+    });
+  }
+  return schema;
+};
+
 const AddPatientEntryForm: React.FC<Props> = ({
   onSubmit,
   onCancel,
@@ -31,31 +48,14 @@ const AddPatientEntryForm: React.FC<Props> = ({
 }) => {
   const [{diagnosis}] = useStateValue();
 
+  const schemaToValidate = getSchema(entryType);
+
   return (
     <Formik
       initialValues={initialValues[entryType]}
       onSubmit={onSubmit}
       enableReinitialize={true}
-      validate={values => {
-        const requiredError = 'Field is required';
-        const errors: { [field: string]: string } = {};
-        if (!values.type) {
-          errors.name = requiredError;
-        }
-        if (!values.description) {
-          errors.description = requiredError;
-        }
-        if (!values.date) {
-          errors.date = requiredError;
-        }
-        if (!values.specialist) {
-          errors.specialist = requiredError;
-        }
-        if (!values.diagnosisCodes) {
-          errors.diagnosisCodes = requiredError;
-        }
-        return errors;
-      }}
+      validationSchema={schemaToValidate}
     >
       {({ values, isValid, dirty, setFieldValue, setFieldTouched }) => {
         return (

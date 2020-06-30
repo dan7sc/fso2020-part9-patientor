@@ -19,6 +19,7 @@ const AddPatientEntryModal: React.FC<Props> = ({
 }) => {
   return (
     <Modal
+      centered={false}
       closeIcon
       open={modalOpen}
       onClose={onClose}

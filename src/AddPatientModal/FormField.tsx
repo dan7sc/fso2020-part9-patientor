@@ -120,9 +120,9 @@ export type EntryTypeOption = {
 type SelectTypeFieldProps = {
   name: string;
   label: string;
-  value: any;
+  value: string;
   options: EntryTypeOption[];
-  onChange: (e: React.ChangeEvent<any>) => void;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 };
 
 export const EntryTypeSelectForm: React.FC<SelectTypeFieldProps> = ({
