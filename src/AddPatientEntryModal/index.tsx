@@ -24,7 +24,7 @@ const AddPatientEntryModal: React.FC<Props> = ({
       onClose={onClose}
     >
       <Modal.Header>Add a new patient entry</Modal.Header>
-      <Modal.Content>
+      <Modal.Content scrolling>
         {error &&
          <Segment
            inverted

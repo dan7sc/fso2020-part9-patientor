@@ -68,6 +68,7 @@ const AddPatientEntryForm: React.FC<Props> = ({
             <EntryTypeField
               entryType={values.type}
             />
+            <br />
             <Grid>
               <Grid.Column floated="left" width={5}>
                 <Button

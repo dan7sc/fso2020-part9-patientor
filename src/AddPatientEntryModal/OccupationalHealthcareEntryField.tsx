@@ -9,16 +9,39 @@ export const occupationalHealthcareEntryInitialValues: NewOccupationalHealthcare
   ...baseEntryInitialValues,
   type: EntryType.OccupationalHealthcare,
   employerName: '',
+  sickLeave: {
+    startDate: '',
+    endDate: ''
+  }
 };
 
 const OccupationalHealthcarekEntryField = () => {
   return (
-    <Field
-      label="Employer Name"
-      placeholder="Employer Name"
-      name="employerName"
-      component={TextField}
-    />
+    <>
+      <Field
+        label="Employer Name"
+        placeholder="Employer Name"
+        name="employerName"
+        component={TextField}
+      />
+      <Field as="fieldset" >
+        <Field as="legend">
+          <h5>Sick Leave</h5>
+        </Field>
+        <Field
+          label="Start Date"
+          placeholder="YYYY-MM-DD"
+          name="sickLeave.startDate"
+          component={TextField}
+        />
+        <Field
+          label="End Date"
+          placeholder="YYYY-MM-DD"
+          name="sickLeave.endDate"
+          component={TextField}
+        />
+      </Field>
+    </>
   );
 };
 
