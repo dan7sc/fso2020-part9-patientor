@@ -8,7 +8,9 @@ import { useStateValue } from '../state/state';
 import BaseEntryField, { baseEntryValidation } from './BaseEntryField';
 import { healthCheckEntryInitialValues, healthCheckEntryValidation } from './HealthCheckEntryField';
 import { occupationalHealthcareEntryInitialValues, occupationalHealthcareEntryValidation } from './OccupationalHealthcareEntryField';
+import { hospitalEntryInitialValues, hospitalEntryValidation } from './HospitalEntryField';
 import EntryTypeField from './EntryTypeField';
+
 
 interface Props {
   onSubmit: (values: NewEntry) => void;
@@ -21,6 +23,7 @@ interface ValuesProps {
 }
 
 const initialValues: ValuesProps = {
+  Hospital: hospitalEntryInitialValues,
   HealthCheck: healthCheckEntryInitialValues,
   OccupationalHealthcare: occupationalHealthcareEntryInitialValues
 };
@@ -36,6 +39,11 @@ const getSchema = (type: string) => {
     schema = object().shape({
       ...baseEntryValidation,
       ...healthCheckEntryValidation,
+    });
+  } else if (type === EntryType.Hospital) {
+    schema = object().shape({
+      ...baseEntryValidation,
+      ...hospitalEntryValidation,
     });
   }
   return schema;

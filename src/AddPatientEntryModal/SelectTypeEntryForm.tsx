@@ -10,8 +10,9 @@ interface Props {
 }
 
 const entryTypeOptions: EntryTypeOption[] = [
-  { value: EntryType.OccupationalHealthcare, label: 'Occupational Healthcare'},
-  { value: EntryType.HealthCheck, label: 'Health Check'}
+  { value: EntryType.Hospital, label: 'Hospital' },
+  { value: EntryType.OccupationalHealthcare, label: 'Occupational Healthcare' },
+  { value: EntryType.HealthCheck, label: 'Health Check' }
 ];
 
 const SelectEntryTypeForm: React.FC<Props> = ({
